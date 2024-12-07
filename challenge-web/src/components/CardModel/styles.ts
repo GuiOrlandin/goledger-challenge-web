@@ -4,8 +4,9 @@ export const CardContainer = styled.div`
   border-radius: 8px;
   padding: 1rem;
   margin: 0.5rem 0;
-  max-width: 21rem;
   background-color: #1D171C;
+  width: 15rem;
+
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 
@@ -18,6 +19,12 @@ export const CardContainer = styled.div`
 export const Title = styled.h3`
   margin: 0;
   font-size: 1.2rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; 
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 `;
 
 export const InfoRow = styled.div`

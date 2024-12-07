@@ -1,13 +1,25 @@
 import { useState } from "react";
 import SideBar from "../../components/sideBar";
-import { ButtonsOptionContainer, HomeContaienr, HomeContent, HomeMain, OptionButton } from "./styles";
+import { ButtonsOptionContainer, CardListContainer, HomeContaienr, HomeContent, HomeMain, OptionButton, PaginationContainer } from "./styles";
 import CardModel from "../../components/CardModel";
+import { albumFetch } from "../../service/getAlbumFetch";
 
 
 
 export default function Home() {
 
-    const playlists = { name: "Guilherme Playlist", author: "Guilherme", lastUpdated: "2024-12-06T17:14:38Z" }
+    const { data, isLoading } = albumFetch()
+    const [currentPage, setCurrentPage] = useState(1);
+    const limit = 12;
+
+    const startIndex = (currentPage - 1) * limit;
+    const endIndex = startIndex + limit;
+    const paginatedItems = data?.slice(startIndex, endIndex);
+    const totalPages = data ? Math.ceil(data.length / limit) : 0;
+    const pages = Array.from({ length: totalPages }, (_, index) => index + 1);
+
+    console.log(pages)
+
 
 
     const [seletecButton, setSeletecButton] = useState<string>("")
@@ -17,12 +29,14 @@ export default function Home() {
             <HomeMain>
                 <ButtonsOptionContainer>
                     <OptionButton
+                        $isActive={seletecButton === "all"}
                         onClick={() => setSeletecButton("all")}
                     >Tudo</OptionButton>
                     <OptionButton
                         onClick={() => setSeletecButton("music")}
                     >Musica</OptionButton>
                     <OptionButton
+                        $isActive={seletecButton === "artist"}
                         onClick={() => setSeletecButton("artist")}
                     >Artista</OptionButton>
                 </ButtonsOptionContainer>
@@ -32,7 +46,24 @@ export default function Home() {
                         <h2>
                             Novidades
                         </h2>
-                        <CardModel type="playlist" data={playlists} />
+
+                        <CardListContainer>
+                            {paginatedItems?.map((album) => (
+                                <CardModel key={album["@key"]} type="album" data={album} />
+                            ))}
+                        </CardListContainer>
+
+                        <PaginationContainer>
+                            {pages.map(page => (
+                                <OptionButton
+                                    key={page}
+                                    onClick={() => setCurrentPage(page)}
+                                    $isActive={currentPage === page}
+                                >
+                                    {page}
+                                </OptionButton>
+                            ))}
+                        </PaginationContainer>
                     </HomeContent>
                 }
             </HomeMain>

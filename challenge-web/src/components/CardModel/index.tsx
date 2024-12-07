@@ -16,9 +16,13 @@ interface MusicData {
 };
 
 interface AlbumData {
+    "@lastUpdated": string;
+    artist: {
+        "@assetType": "artist";
+        "@key": string;
+    };
     name: string;
-    author: string;
-    year: string;
+    year: number;
 };
 
 interface CardModelProps {
@@ -35,17 +39,13 @@ export default function CardModel({ type, data }: CardModelProps) {
     return (
         <CardContainer>
             <Title>{data.name}</Title>
-            <InfoRow>
-                <Label>Autor:</Label>
-                <Value>{data.author}</Value>
-            </InfoRow>
             {type === "playlist" && "lastUpdated" in data && (
                 <InfoRow>
                     <Label>Última atualização:</Label>
                     <Value>{formatDate(data.lastUpdated)}</Value>
                 </InfoRow>
             )}
-            {type === "music" && "album" in data && (
+            {type === "artist" && "album" in data && (
                 <InfoRow>
                     <Label>Álbum:</Label>
                     <Value>{data.album}</Value>
