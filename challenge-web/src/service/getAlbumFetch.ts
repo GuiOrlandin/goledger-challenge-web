@@ -38,7 +38,7 @@ async function fetchAlbumData() {
 
 export function albumFetch() {
     return useQuery<AlbumResponse[]>({
-        queryKey: ["albums-info"],
+        queryKey: ["albuns-info"],
         queryFn: () => fetchAlbumData(),
     });
 }

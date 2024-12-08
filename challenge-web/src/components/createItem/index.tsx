@@ -21,6 +21,7 @@ import { useForm, FieldValues } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createArtistMutate } from "../../service/createArtistMutate";
+import { createAlbumMutate } from "../../service/createAlbumMutate";
 
 const artistSchema = z.object({
     artistName: z.string().min(3, "O nome do artista deve conter no mínimo 3 caracteres."),
@@ -30,7 +31,7 @@ const artistSchema = z.object({
 const albumSchema = z.object({
     albumName: z.string().min(3, "O nome do álbum deve conter no mínimo 3 caracteres."),
     artistNameInAlbum: z.string().min(3, "O artista da música deve conter no mínimo 3 caracteres."),
-    yearOfAlbum: z.number().min(1900, "O ano deve ser no mínimo 1900.").max(new Date().getFullYear(), "Ano inválido."),
+    yearOfAlbum: z.number().min(1900, "O ano deve ser no mínimo 1900.").max(new Date().getFullYear(), "Ano inválido.").transform((val) => val.toString()),
 });
 
 const songSchema = z.object({
@@ -45,6 +46,7 @@ export default function CreateItemDialog() {
     const [open, setOpen] = useState<boolean>(false);
     const [selectedButton, setSelectedButton] = useState<string>("artist");
     const { mutate: createArtist, isSuccess: artistCreated } = createArtistMutate()
+    const { mutate: createAlbum, isSuccess: albumCreated } = createAlbumMutate()
 
     const schemaMap = {
         artist: artistSchema,
@@ -72,16 +74,25 @@ export default function CreateItemDialog() {
                 }
             })
         }
+        if (selectedButton === "album") {
+            createAlbum({
+                albumData: {
+                    artist: data.artistNameInAlbum,
+                    name: data.albumName,
+                    year: data.yearOfAlbum
+                }
+            })
+        }
     }
 
 
     useEffect(() => {
-        if (artistCreated) {
+        if (artistCreated || albumCreated) {
             reset()
             setOpen(false)
         }
     }, [
-        artistCreated
+        artistCreated, albumCreated
     ])
 
     return (
