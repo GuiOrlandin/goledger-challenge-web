@@ -11,8 +11,8 @@ import { SongResponse } from "../../service/getSongFetch";
 import { FaCompactDisc, FaListUl, FaMusic, FaUser } from "react-icons/fa";
 import { PlaylistResponse } from "../../service/getPlaylistFetch";
 
-import { MdDelete } from "react-icons/md";
 import EditItemDialog from "../editItem";
+import DeleteDialog from "../deleteDialog";
 
 
 interface CardModelProps {
@@ -25,6 +25,8 @@ export default function CardModel({ data }: CardModelProps) {
         const date = new Date(dateString);
         return format(date, "dd 'de' MMMM 'de' yyyy", { locale: ptBR });
     }
+
+
 
     return (
         <CardContainer onMouseOver={() => setIsHovered(true)}
@@ -49,7 +51,9 @@ export default function CardModel({ data }: CardModelProps) {
                             {isHovered ?
                                 <HoveredButtonsContainer>
                                     <EditItemDialog type="artist" InitalData={data} />
-                                    <MdDelete size={20} />
+                                    <DeleteDialog title="Deseja deletar o artista?"
+                                        data={data}
+                                    />
                                 </HoveredButtonsContainer>
                                 :
                                 <FaUser />
@@ -75,7 +79,9 @@ export default function CardModel({ data }: CardModelProps) {
                                 {isHovered ?
                                     <HoveredButtonsContainer>
                                         <EditItemDialog type="album" InitalData={data} />
-                                        <MdDelete size={20} />
+                                        <DeleteDialog title="Deseja deletar o album?"
+                                            data={data}
+                                        />
                                     </HoveredButtonsContainer>
                                     :
                                     <FaCompactDisc />
@@ -95,7 +101,15 @@ export default function CardModel({ data }: CardModelProps) {
                         {data.name !== "" &&
                             <NameAndSvgIconContainer>
                                 <Title>{data.name}</Title>
-                                <FaMusic />
+                                {isHovered ?
+                                    <HoveredButtonsContainer>
+                                        <DeleteDialog title="Deseja deletar a música?"
+                                            data={data}
+                                        />
+                                    </HoveredButtonsContainer>
+                                    :
+                                    <FaMusic />
+                                }
                             </NameAndSvgIconContainer>
                         }
                         <InfoRow>

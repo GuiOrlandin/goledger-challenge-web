@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import SideBar from "../../components/sideBar";
 import { ButtonsOptionContainer, CardListContainer, HomeContaienr, HomeContent, HomeMain, OptionButton, PaginationContainer, SelectedButtonsAndAddItemsButtonContainer } from "./styles";
 import CardModel from "../../components/CardModel";
@@ -22,6 +22,8 @@ export default function Home() {
 
 
 
+
+
     function getPaginatedItems(data: any[], page: number, limit: number) {
         const startIndex = (page - 1) * limit;
         const endIndex = startIndex + limit;
@@ -36,12 +38,22 @@ export default function Home() {
 
 
     const limit = 15
-    const filteredItems = filterItemsByType(seletecButton);
-    const paginatedItems = getPaginatedItems(filteredItems, currentPage, limit);
+
+
+
+
+    const filteredItems = useMemo(
+        () => filterItemsByType(seletecButton),
+        [seletecButton, allResponsesData]
+    );
+
+    const paginatedItems = useMemo(
+        () => getPaginatedItems(filteredItems, currentPage, limit),
+        [filteredItems, currentPage, limit]
+    );
 
     const totalPages = Math.ceil(filteredItems.length / limit);
     const pages = Array.from({ length: totalPages }, (_, index) => index + 1);
-
 
 
     useEffect(() => {
@@ -60,6 +72,8 @@ export default function Home() {
             setAllResponsesData(sortedData);
         }
     }, [data, artistData, songsData, playlistData]);
+
+
 
 
     return (
@@ -121,7 +135,7 @@ export default function Home() {
                     }
                     <CardListContainer>
                         {paginatedItems?.map((album) => (
-                            <CardModel key={crypto.randomUUID()} data={album} />
+                            <CardModel key={album["@key"]} data={album} />
                         ))}
                     </CardListContainer>
 
