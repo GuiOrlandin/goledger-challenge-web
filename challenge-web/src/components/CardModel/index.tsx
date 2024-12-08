@@ -99,7 +99,7 @@ export default function CardModel({ data }: CardModelProps) {
                             </NameAndSvgIconContainer>
                         }
                         <InfoRow>
-                            <Label>Ano:</Label>
+                            <Label>Criada em:</Label>
                             <Value>{formatDate(data["@lastUpdated"])}</Value>
                         </InfoRow>
                     </>

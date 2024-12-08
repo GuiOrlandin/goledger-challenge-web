@@ -35,15 +35,10 @@ const albumSchema = z.object({
     yearOfAlbum: z.number().min(1900, "O ano deve ser no mínimo 1900.").max(new Date().getFullYear(), "Ano inválido.").transform((val) => val.toString()),
 });
 
-const songSchema = z.object({
-    songName: z.string().min(3, "O nome da música deve conter no mínimo 3 caracteres."),
-    artistOfSong: z.string().min(3, "O artista da música deve conter no mínimo 3 caracteres."),
-    albumOfSong: z.string().min(3, "O nome do álbum deve conter no mínimo 3 caracteres."),
-});
 
 interface EditItemDialogProps {
-    type: 'artist' | 'album' | 'song';
-    InitalData: SongResponse | AlbumResponse | ArtistResponse | PlaylistResponse
+    type: 'artist' | 'album';
+    InitalData: AlbumResponse | ArtistResponse | PlaylistResponse
 }
 
 
@@ -55,7 +50,6 @@ export default function EditItemDialog({ type, InitalData }: EditItemDialogProps
     const schemaMap = {
         artist: artistSchema,
         album: albumSchema,
-        song: songSchema,
     };
 
 
@@ -71,10 +65,6 @@ export default function EditItemDialog({ type, InitalData }: EditItemDialogProps
             albumName: InitalData.name,
             artistNameInAlbum: (InitalData as AlbumResponse).artist,
             yearOfAlbum: (InitalData as AlbumResponse).year,
-        },
-        song: {
-            songName: InitalData.name,
-            albumOfSong: (InitalData as SongResponse).album,
         },
     }
 
@@ -107,9 +97,6 @@ export default function EditItemDialog({ type, InitalData }: EditItemDialogProps
                     key: InitalData["@key"]
                 }
             })
-        }
-        if (type === "song") {
-
         }
     }
 
@@ -188,42 +175,6 @@ export default function EditItemDialog({ type, InitalData }: EditItemDialogProps
                                     {editAlbumRequestError && (
                                         <ErrorMessage>{editAlbumRequestError.message}</ErrorMessage>
                                     )}
-                                </LabelAndInputContainer>
-                            </>
-                        )}
-                        {type === "song" && (
-                            <>
-                                <LabelAndInputContainer>
-                                    <label>Nome da Música</label>
-                                    <input
-                                        placeholder="Digite o nome da música"
-                                        {...register("songName")}
-                                    />
-                                    {errors.songName && <ErrorMessage>{errors.songName.message}</ErrorMessage>}
-                                </LabelAndInputContainer>
-                                <LabelAndInputContainer>
-
-                                    <label>Artista</label>
-                                    <input
-                                        placeholder="Digite o nome do artista"
-                                        {...register("artistOfSong")}
-                                    />
-                                    {errors.artistOfSong && (
-                                        <ErrorMessage>{errors.artistOfSong.message}</ErrorMessage>
-                                    )}
-                                </LabelAndInputContainer>
-                                <LabelAndInputContainer>
-                                    <label>Album</label>
-                                    <input
-                                        placeholder="Digite o album que a música faz parte"
-                                        {...register("albumOfSong")}
-                                    />
-                                    {errors.albumOfSong
-                                        // && !createSongRequestError 
-                                        && <ErrorMessage>{errors.albumOfSong.message}</ErrorMessage>}
-                                    {/* {createSongRequestError && (
-                                        <ErrorMessage>{createSongRequestError.message}</ErrorMessage>
-                                    )} */}
                                 </LabelAndInputContainer>
                             </>
                         )}
