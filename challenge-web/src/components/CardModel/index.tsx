@@ -48,8 +48,8 @@ export default function CardModel({ data }: CardModelProps) {
                             <Title>{data.name}</Title>
                             {isHovered ?
                                 <HoveredButtonsContainer>
-                                    <EditItemDialog type="artist" data={data} />
-                                    <MdDelete size={20}/>
+                                    <EditItemDialog type="artist" InitalData={data} />
+                                    <MdDelete size={20} />
                                 </HoveredButtonsContainer>
                                 :
                                 <FaUser />
@@ -68,10 +68,18 @@ export default function CardModel({ data }: CardModelProps) {
             {
                 data["@assetType"] === "album" && "year" in data && (
                     <>
+
                         {data.name !== "" &&
                             <NameAndSvgIconContainer>
                                 <Title>{data.name}</Title>
-                                <FaCompactDisc />
+                                {isHovered ?
+                                    <HoveredButtonsContainer>
+                                        <EditItemDialog type="album" InitalData={data} />
+                                        <MdDelete size={20} />
+                                    </HoveredButtonsContainer>
+                                    :
+                                    <FaCompactDisc />
+                                }
                             </NameAndSvgIconContainer>
                         }
                         <InfoRow>

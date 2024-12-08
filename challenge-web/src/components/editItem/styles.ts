@@ -1,10 +1,6 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import styled from "styled-components";
 
-interface isSelected {
-    $isActive: boolean
-}
-
 export const Overlay = styled(Dialog.Overlay)`
   position: fixed;
   width: 100vw;

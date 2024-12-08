@@ -23,6 +23,7 @@ import { AlbumResponse } from "../../service/getAlbumFetch";
 import { ArtistResponse } from "../../service/getArtistFetch";
 import { PlaylistResponse } from "../../service/getPlaylistFetch";
 import { editArtistMutate } from "../../service/editArtistMutate";
+import { editAlbumMutate } from "../../service/editAlbumMutate";
 
 const artistSchema = z.object({
     artistName: z.string().min(3, "O nome do artista deve conter no mínimo 3 caracteres."),
@@ -31,7 +32,6 @@ const artistSchema = z.object({
 
 const albumSchema = z.object({
     albumName: z.string().min(3, "O nome do álbum deve conter no mínimo 3 caracteres."),
-    artistNameInAlbum: z.string().min(3, "O artista da música deve conter no mínimo 3 caracteres."),
     yearOfAlbum: z.number().min(1900, "O ano deve ser no mínimo 1900.").max(new Date().getFullYear(), "Ano inválido.").transform((val) => val.toString()),
 });
 
@@ -43,13 +43,14 @@ const songSchema = z.object({
 
 interface EditItemDialogProps {
     type: 'artist' | 'album' | 'song';
-    data: SongResponse | AlbumResponse | ArtistResponse | PlaylistResponse
+    InitalData: SongResponse | AlbumResponse | ArtistResponse | PlaylistResponse
 }
 
 
-export default function EditItemDialog({ type, data }: EditItemDialogProps) {
+export default function EditItemDialog({ type, InitalData }: EditItemDialogProps) {
     const [open, setOpen] = useState<boolean>(false);
-    const { mutate: editArtis, isSuccess: artistEdited } = editArtistMutate()
+    const { mutate: editArtis, isSuccess: artistEdited, error: editArtistRequestError } = editArtistMutate()
+    const { mutate: editAlbum, isSuccess: albumEdited, error: editAlbumRequestError } = editAlbumMutate()
 
     const schemaMap = {
         artist: artistSchema,
@@ -63,17 +64,17 @@ export default function EditItemDialog({ type, data }: EditItemDialogProps) {
 
     const defaultValues = {
         artist: {
-            artistName: data.name,
-            country: (data as ArtistResponse).country,
+            artistName: InitalData.name,
+            country: (InitalData as ArtistResponse).country,
         },
         album: {
-            albumName: data.name,
-            artistNameInAlbum: (data as AlbumResponse).artist,
-            yearOfAlbum: (data as AlbumResponse).year,
+            albumName: InitalData.name,
+            artistNameInAlbum: (InitalData as AlbumResponse).artist,
+            yearOfAlbum: (InitalData as AlbumResponse).year,
         },
         song: {
-            songName: data.name,
-            albumOfSong: (data as SongResponse).album,
+            songName: InitalData.name,
+            albumOfSong: (InitalData as SongResponse).album,
         },
     }
 
@@ -89,16 +90,23 @@ export default function EditItemDialog({ type, data }: EditItemDialogProps) {
     });
 
     function handleEditItem(data: FieldValues) {
+        console.log(data)
+
         if (type === "artist") {
             editArtis({
                 artistData: {
                     country: data.country,
-                    name: data.artistName,
+                    key: InitalData["@key"],
                 }
             })
         }
         if (type === "album") {
-
+            editAlbum({
+                albumData: {
+                    year: data.yearOfAlbum,
+                    key: InitalData["@key"]
+                }
+            })
         }
         if (type === "song") {
 
@@ -107,12 +115,12 @@ export default function EditItemDialog({ type, data }: EditItemDialogProps) {
 
 
     useEffect(() => {
-        if (artistEdited) {
+        if (artistEdited || albumEdited) {
             reset()
             setOpen(false)
         }
     }, [
-        artistEdited
+        artistEdited, albumEdited
     ])
 
 
@@ -149,9 +157,9 @@ export default function EditItemDialog({ type, data }: EditItemDialogProps) {
                                         {...register("country")}
                                     />
                                     {errors.country &&
-                                        // !createArtistRequestError && 
+                                        !editArtistRequestError &&
                                         <ErrorMessage>{errors.country.message}</ErrorMessage>}
-                                    {/* {createArtistRequestError && < ErrorMessage > {createArtistRequestError.message}</ErrorMessage>} */}
+                                    {editArtistRequestError && < ErrorMessage > {editArtistRequestError.message}</ErrorMessage>}
                                 </LabelAndInputContainer>
                             </>
                         )}
@@ -163,21 +171,10 @@ export default function EditItemDialog({ type, data }: EditItemDialogProps) {
                                     <input
                                         placeholder="Digite o nome do álbum"
                                         {...register("albumName")}
+                                        disabled={true}
                                     />
                                     {errors.albumName && <ErrorMessage>{errors.albumName.message}</ErrorMessage>}
                                 </LabelAndInputContainer>
-
-                                <LabelAndInputContainer>
-                                    <label>Artista</label>
-                                    <input
-                                        placeholder="Digite o nome do artista"
-                                        {...register("artistNameInAlbum")}
-                                    />
-                                    {errors.artistNameInAlbum && (
-                                        <ErrorMessage>{errors?.artistNameInAlbum.message}</ErrorMessage>
-                                    )}
-                                </LabelAndInputContainer>
-
                                 <LabelAndInputContainer>
                                     <label>Ano de Lançamento</label>
                                     <input
@@ -186,11 +183,11 @@ export default function EditItemDialog({ type, data }: EditItemDialogProps) {
                                         {...register("yearOfAlbum", { valueAsNumber: true })}
                                     />
                                     {errors.yearOfAlbum &&
-                                        // !createAlbumRequestError &&
+                                        !editAlbumRequestError &&
                                         <ErrorMessage>{errors.yearOfAlbum.message}</ErrorMessage>}
-                                    {/* {createAlbumRequestError && (
-                                        <ErrorMessage>{createAlbumRequestError.message}</ErrorMessage>
-                                    )} */}
+                                    {editAlbumRequestError && (
+                                        <ErrorMessage>{editAlbumRequestError.message}</ErrorMessage>
+                                    )}
                                 </LabelAndInputContainer>
                             </>
                         )}
