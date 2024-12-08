@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import {
     CloseAndSaveChangesButtonsContainer,
@@ -8,6 +8,7 @@ import {
     DescriptionContainer,
     ErrorMessage,
     FormOfCreateOrEditItem,
+    LabelAndInputContainer,
     OptionButton,
     OptionsButtonContainer,
     Overlay,
@@ -19,22 +20,23 @@ import { FaPlus } from "react-icons/fa";
 import { useForm, FieldValues } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { createArtistMutate } from "../../service/createArtistMutate";
 
 const artistSchema = z.object({
-    name: z.string().min(3, "O nome do artista deve conter no mínimo 3 caracteres."),
+    artistName: z.string().min(3, "O nome do artista deve conter no mínimo 3 caracteres."),
     country: z.string().min(2, "O país deve conter no mínimo 2 caracteres."),
 });
 
 const albumSchema = z.object({
-    name: z.string().min(3, "O nome do álbum deve conter no mínimo 3 caracteres."),
-    artist: z.string().min(3, "O artista da música deve conter no mínimo 3 caracteres."),
-    year: z.number().min(1900, "O ano deve ser no mínimo 1900.").max(new Date().getFullYear(), "Ano inválido."),
+    albumName: z.string().min(3, "O nome do álbum deve conter no mínimo 3 caracteres."),
+    artistNameInAlbum: z.string().min(3, "O artista da música deve conter no mínimo 3 caracteres."),
+    yearOfAlbum: z.number().min(1900, "O ano deve ser no mínimo 1900.").max(new Date().getFullYear(), "Ano inválido."),
 });
 
 const songSchema = z.object({
-    name: z.string().min(3, "O nome da música deve conter no mínimo 3 caracteres."),
-    artist: z.string().min(3, "O artista da música deve conter no mínimo 3 caracteres."),
-    album: z.string().min(3, "O nome do álbum deve conter no mínimo 3 caracteres."),
+    songName: z.string().min(3, "O nome da música deve conter no mínimo 3 caracteres."),
+    artistOfSong: z.string().min(3, "O artista da música deve conter no mínimo 3 caracteres."),
+    albumOfSong: z.string().min(3, "O nome do álbum deve conter no mínimo 3 caracteres."),
 });
 
 
@@ -42,6 +44,7 @@ const songSchema = z.object({
 export default function CreateItemDialog() {
     const [open, setOpen] = useState<boolean>(false);
     const [selectedButton, setSelectedButton] = useState<string>("artist");
+    const { mutate: createArtist, isSuccess: artistCreated } = createArtistMutate()
 
     const schemaMap = {
         artist: artistSchema,
@@ -61,10 +64,25 @@ export default function CreateItemDialog() {
     });
 
     function handleCreateItem(data: FieldValues) {
-        console.log(`Dados do item criado (${selectedButton}):`, data);
-        reset();
-        setOpen(false);
+        if (selectedButton === "artist") {
+            createArtist({
+                artistData: {
+                    country: data.country,
+                    name: data.artistName
+                }
+            })
+        }
     }
+
+
+    useEffect(() => {
+        if (artistCreated) {
+            reset()
+            setOpen(false)
+        }
+    }, [
+        artistCreated
+    ])
 
     return (
         <Dialog.Root open={open}>
@@ -103,76 +121,93 @@ export default function CreateItemDialog() {
                     <FormOfCreateOrEditItem onSubmit={handleSubmit(handleCreateItem)}>
                         {selectedButton === "artist" && (
                             <>
-                                <label>Nome do Artista</label>
-                                <input
-                                    placeholder="Digite o nome do artista"
-                                    {...register("name")}
-                                />
-                                {errors.name && <ErrorMessage>{errors.name.message}</ErrorMessage>}
-
-                                <label>Nacionalidade</label>
-                                <input
-                                    placeholder="Digite a nacionalidade"
-                                    {...register("country")}
-                                />
-                                {errors.country && <ErrorMessage>{errors.country.message}</ErrorMessage>}
+                                <LabelAndInputContainer>
+                                    <label>Nome do Artista</label>
+                                    <input
+                                        placeholder="Digite o nome do artista"
+                                        {...register("artistName")}
+                                    />
+                                    {errors.artistName && <ErrorMessage>{errors.artistName.message}</ErrorMessage>}
+                                </LabelAndInputContainer>
+                                <LabelAndInputContainer>
+                                    <label>Nacionalidade</label>
+                                    <input
+                                        placeholder="Digite a nacionalidade"
+                                        {...register("country")}
+                                    />
+                                    {errors.country && <ErrorMessage>{errors.country.message}</ErrorMessage>}
+                                </LabelAndInputContainer>
                             </>
                         )}
                         {selectedButton === "album" && (
                             <>
-                                <label>Nome do Álbum</label>
-                                <input
-                                    placeholder="Digite o nome do álbum"
-                                    {...register("name")}
-                                />
-                                {errors.name && <ErrorMessage>{errors.name.message}</ErrorMessage>}
+                                <LabelAndInputContainer>
 
-                                <label>Artista</label>
-                                <input
-                                    placeholder="Digite o nome do artista"
-                                    {...register("artist")}
-                                />
-                                {errors.artist && (
-                                    <ErrorMessage>{errors?.artist.message}</ErrorMessage>
-                                )}
+                                    <label>Nome do Álbum</label>
+                                    <input
+                                        placeholder="Digite o nome do álbum"
+                                        {...register("albumName")}
+                                    />
+                                    {errors.albumName && <ErrorMessage>{errors.albumName.message}</ErrorMessage>}
+                                </LabelAndInputContainer>
 
-                                <label>Ano de Lançamento</label>
-                                <input
-                                    type="number"
-                                    placeholder="Digite o ano"
-                                    {...register("year", { valueAsNumber: true })}
-                                />
-                                {errors.year && <ErrorMessage>{errors.year.message}</ErrorMessage>}
+                                <LabelAndInputContainer>
+                                    <label>Artista</label>
+                                    <input
+                                        placeholder="Digite o nome do artista"
+                                        {...register("artistNameInAlbum")}
+                                    />
+                                    {errors.artistNameInAlbum && (
+                                        <ErrorMessage>{errors?.artistNameInAlbum.message}</ErrorMessage>
+                                    )}
+                                </LabelAndInputContainer>
+
+                                <LabelAndInputContainer>
+                                    <label>Ano de Lançamento</label>
+                                    <input
+                                        type="number"
+                                        placeholder="Digite o ano"
+                                        {...register("yearOfAlbum", { valueAsNumber: true })}
+                                    />
+                                    {errors.yearOfAlbum && <ErrorMessage>{errors.yearOfAlbum.message}</ErrorMessage>}
+                                </LabelAndInputContainer>
                             </>
                         )}
                         {selectedButton === "song" && (
                             <>
-                                <label>Nome da Música</label>
-                                <input
-                                    placeholder="Digite o nome da música"
-                                    {...register("name")}
-                                />
-                                {errors.name && <ErrorMessage>{errors.name.message}</ErrorMessage>}
+                                <LabelAndInputContainer>
+                                    <label>Nome da Música</label>
+                                    <input
+                                        placeholder="Digite o nome da música"
+                                        {...register("songName")}
+                                    />
+                                    {errors.songName && <ErrorMessage>{errors.songName.message}</ErrorMessage>}
+                                </LabelAndInputContainer>
+                                <LabelAndInputContainer>
 
-                                <label>Artista</label>
-                                <input
-                                    placeholder="Digite o nome do artista"
-                                    {...register("artist")}
-                                />
-                                {errors.artist && (
-                                    <ErrorMessage>{errors.artist.message}</ErrorMessage>
-                                )}
-
-                                <label>Album</label>
-                                <input
-                                    placeholder="Digite o album que a música faz parte"
-                                    {...register("duration")}
-                                />
-                                {errors.duration && <ErrorMessage>{errors.duration.message}</ErrorMessage>}
+                                    <label>Artista</label>
+                                    <input
+                                        placeholder="Digite o nome do artista"
+                                        {...register("artistOfSong")}
+                                    />
+                                    {errors.artistOfSong && (
+                                        <ErrorMessage>{errors.artistOfSong.message}</ErrorMessage>
+                                    )}
+                                </LabelAndInputContainer>
+                                <LabelAndInputContainer>
+                                    <label>Album</label>
+                                    <input
+                                        placeholder="Digite o album que a música faz parte"
+                                        {...register("albumOfSong")}
+                                    />
+                                    {errors.albumOfSong && <ErrorMessage>{errors.albumOfSong.message}</ErrorMessage>}
+                                </LabelAndInputContainer>
                             </>
                         )}
                         <CloseAndSaveChangesButtonsContainer>
-                            <SaveButton>Criar</SaveButton>
+                            <SaveButton
+                                type="submit"
+                            >Criar</SaveButton>
                             <CloseButton onClick={() => setOpen(false)}>Fechar</CloseButton>
                         </CloseAndSaveChangesButtonsContainer>
                     </FormOfCreateOrEditItem>

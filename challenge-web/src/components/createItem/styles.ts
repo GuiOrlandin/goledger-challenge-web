@@ -116,6 +116,7 @@ export const OptionButton = styled.button<isSelected>`
         outline: none;
     }
 `
+
 export const CreateItemButton = styled.button`
   display: flex;
   padding: 1rem 1rem;
@@ -133,13 +134,23 @@ export const CreateItemButton = styled.button`
   }
 `;
 
+export const LabelAndInputContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  margin-bottom: 1rem;
+`
+
 export const ErrorMessage = styled.p`
+  display: flex;
   color: red;
-  top: 9.6rem;
-  position: fixed;
+  font-size: 0.8rem;
+  margin-top: 6.5rem;
+  position: absolute;
 `;
 export const ErrorMessageInDescription = styled.p`
   color: red;
+  font-size: 0.6rem;
   top: 16.2rem;
   position: fixed;
 `;
