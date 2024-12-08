@@ -39,7 +39,7 @@ export const Content = styled(Dialog.Content)`
 export const CloseAndSaveChangesButtonsContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-top: 1rem;
+  margin-top: 2.5rem;
 `;
 export const CloseButton = styled.button`
   color: white;
@@ -121,15 +121,19 @@ export const CreateItemButton = styled.button`
   display: flex;
   padding: 1rem 1rem;
   justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
   text-align: center;
   color: white;
-  border: none;
+  outline: none;
+  border: 1px solid gray;
   border-radius: 8px;
 
   background: none;
 
   &:hover {
     cursor: pointer;
+    border: 1px solid transparent;
     background: #413E41;
   }
 `;
@@ -138,7 +142,7 @@ export const LabelAndInputContainer = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 `
 
 export const ErrorMessage = styled.p`
@@ -147,10 +151,4 @@ export const ErrorMessage = styled.p`
   font-size: 0.8rem;
   margin-top: 6.5rem;
   position: absolute;
-`;
-export const ErrorMessageInDescription = styled.p`
-  color: red;
-  font-size: 0.6rem;
-  top: 16.2rem;
-  position: fixed;
 `;

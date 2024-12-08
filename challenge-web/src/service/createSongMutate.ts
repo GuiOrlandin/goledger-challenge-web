@@ -1,13 +1,13 @@
 import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-export interface CreateAlbumDetails {
+export interface CreateSongDetails {
     name: string;
     artist: string;
-    year: string;
+    album: string;
 }
 
-async function postData(albumData: CreateAlbumDetails) {
+async function postData(songData: CreateSongDetails) {
     try {
         const token = btoa(`psAdmin:goledger`);
 
@@ -21,13 +21,17 @@ async function postData(albumData: CreateAlbumDetails) {
         const requestBody = {
             asset: [
                 {
-                    "@assetType": "album",
-                    "artist": {
-                        "@assetType": "artist",
-                        name: albumData.artist,
+                    "@assetType": "song",
+                    "album": {
+                        "@assetType": "album",
+                        name: songData.album,
+                        "artist": {
+                            "@assetType": "artist",
+                            name: songData.artist,
+                        },
                     },
-                    name: albumData.name,
-                    year: albumData.year
+
+                    name: songData.name,
                 },
             ],
         };
@@ -40,18 +44,18 @@ async function postData(albumData: CreateAlbumDetails) {
 
         return response.data;
     } catch (error) {
-        throw new Error("Falha ao criar o album: é necessário que o artista exista");
+        throw new Error("Falha ao criar a música: é necessário que o artista e o álbum existam");
     }
 }
 
-export function createAlbumMutate() {
+export function createSongMutate() {
     const queryClient = useQueryClient();
 
     const mutate = useMutation({
-        mutationFn: ({ albumData }: { albumData: CreateAlbumDetails }) =>
-            postData(albumData),
+        mutationFn: ({ songData }: { songData: CreateSongDetails }) =>
+            postData(songData),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["albuns-info"] });
+            queryClient.invalidateQueries({ queryKey: ["songs-info"] });
         },
     });
 

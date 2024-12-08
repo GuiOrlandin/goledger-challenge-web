@@ -22,6 +22,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createArtistMutate } from "../../service/createArtistMutate";
 import { createAlbumMutate } from "../../service/createAlbumMutate";
+import { createSongMutate } from "../../service/createSongMutate";
 
 const artistSchema = z.object({
     artistName: z.string().min(3, "O nome do artista deve conter no mínimo 3 caracteres."),
@@ -45,8 +46,9 @@ const songSchema = z.object({
 export default function CreateItemDialog() {
     const [open, setOpen] = useState<boolean>(false);
     const [selectedButton, setSelectedButton] = useState<string>("artist");
-    const { mutate: createArtist, isSuccess: artistCreated } = createArtistMutate()
-    const { mutate: createAlbum, isSuccess: albumCreated } = createAlbumMutate()
+    const { mutate: createArtist, isSuccess: artistCreated, error: createArtistRequestError } = createArtistMutate()
+    const { mutate: createAlbum, isSuccess: albumCreated, error: createAlbumRequestError } = createAlbumMutate()
+    const { mutate: createSong, isSuccess: songCreated, error: createSongRequestError } = createSongMutate()
 
     const schemaMap = {
         artist: artistSchema,
@@ -83,22 +85,33 @@ export default function CreateItemDialog() {
                 }
             })
         }
+        if (selectedButton === "song") {
+            createSong({
+                songData: {
+                    album: data.albumOfSong,
+                    artist: data.artistOfSong,
+                    name: data.songName,
+                }
+            })
+        }
     }
 
 
     useEffect(() => {
-        if (artistCreated || albumCreated) {
+        if (artistCreated || albumCreated || songCreated) {
             reset()
             setOpen(false)
         }
     }, [
-        artistCreated, albumCreated
+        artistCreated, albumCreated, songCreated
     ])
+
 
     return (
         <Dialog.Root open={open}>
             <Dialog.Trigger asChild>
                 <CreateItemButton onClick={() => setOpen(true)}>
+                    Criar Item
                     <FaPlus />
                 </CreateItemButton>
             </Dialog.Trigger>
@@ -146,7 +159,8 @@ export default function CreateItemDialog() {
                                         placeholder="Digite a nacionalidade"
                                         {...register("country")}
                                     />
-                                    {errors.country && <ErrorMessage>{errors.country.message}</ErrorMessage>}
+                                    {errors.country && !createArtistRequestError && <ErrorMessage>{errors.country.message}</ErrorMessage>}
+                                    {createArtistRequestError && < ErrorMessage > {createArtistRequestError.message}</ErrorMessage>}
                                 </LabelAndInputContainer>
                             </>
                         )}
@@ -180,7 +194,10 @@ export default function CreateItemDialog() {
                                         placeholder="Digite o ano"
                                         {...register("yearOfAlbum", { valueAsNumber: true })}
                                     />
-                                    {errors.yearOfAlbum && <ErrorMessage>{errors.yearOfAlbum.message}</ErrorMessage>}
+                                    {errors.yearOfAlbum && !createAlbumRequestError && <ErrorMessage>{errors.yearOfAlbum.message}</ErrorMessage>}
+                                    {createAlbumRequestError && (
+                                        <ErrorMessage>{createAlbumRequestError.message}</ErrorMessage>
+                                    )}
                                 </LabelAndInputContainer>
                             </>
                         )}
@@ -211,7 +228,10 @@ export default function CreateItemDialog() {
                                         placeholder="Digite o album que a música faz parte"
                                         {...register("albumOfSong")}
                                     />
-                                    {errors.albumOfSong && <ErrorMessage>{errors.albumOfSong.message}</ErrorMessage>}
+                                    {errors.albumOfSong && !createSongRequestError && <ErrorMessage>{errors.albumOfSong.message}</ErrorMessage>}
+                                    {createSongRequestError && (
+                                        <ErrorMessage>{createSongRequestError.message}</ErrorMessage>
+                                    )}
                                 </LabelAndInputContainer>
                             </>
                         )}
@@ -224,6 +244,6 @@ export default function CreateItemDialog() {
                     </FormOfCreateOrEditItem>
                 </Content>
             </Dialog.Portal>
-        </Dialog.Root>
+        </Dialog.Root >
     );
 }
