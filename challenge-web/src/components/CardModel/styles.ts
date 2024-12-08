@@ -30,20 +30,29 @@ export const Title = styled.h3`
 
 export const NameAndSvgIconContainer = styled.div`
   display: flex;
+  align-items: center;
   justify-content: space-between;
-`
-export const InfoRow = styled.div`
+  `
+export const HoveredButtonsContainer = styled.div`
   display: flex;
-  justify-content: space-between;
-  margin: 8px 0;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0;
+  justify-content: flex-end;
+`;
+
+export const InfoRow = styled.div`
+display: flex;
+justify-content: space-between;
+margin: 8px 0;
 `;
 
 export const Label = styled.span`
-  font-weight: bold;
-  font-size: 0.9rem;
+font-weight: bold;
+font-size: 0.9rem;
 `;
 
 export const Value = styled.span`
-  color: gray;
-  font-size: 0.9rem;
+color: gray;
+font-size: 0.9rem;
 `;
