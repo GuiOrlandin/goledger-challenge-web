@@ -1,28 +1,30 @@
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 
-export interface AlbumResponse {
-    "@assetType": "album";
+export interface Song {
+    "@assetType": "song";
+    "@key": string;
+}
+
+export interface PlaylistResponse {
+    "@assetType": "playlist";
     "@key": string;
     "@lastTouchBy": string;
     "@lastTx": string;
     "@lastUpdated": string;
-    artist: {
-        "@assetType": "artist";
-        "@key": string;
-    };
     name: string;
-    year: number;
+    private: boolean;
+    songs: Song[];
     type: string | undefined,
 }
 
-async function fetchAlbumData() {
+async function fetchPlaylistData() {
     const response = await axios.post(
         `http://ec2-54-91-215-149.compute-1.amazonaws.com/api/query/search`,
         {
             query: {
                 selector: {
-                    "@assetType": "album",
+                    "@assetType": "playlist",
                 },
             },
         },
@@ -36,9 +38,9 @@ async function fetchAlbumData() {
     return response.data.result;
 }
 
-export function albumFetch() {
-    return useQuery<AlbumResponse[]>({
-        queryKey: ["albums-info"],
-        queryFn: () => fetchAlbumData(),
+export function playlistFetch() {
+    return useQuery<PlaylistResponse[]>({
+        queryKey: ["playlist-info"],
+        queryFn: () => fetchPlaylistData(),
     });
 }

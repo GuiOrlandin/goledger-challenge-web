@@ -7,7 +7,9 @@ interface IsSelected {
 
 export const HomeContaienr = styled.div`
   display: flex;
+  box-sizing: border-box;
   min-height: 100vh; 
+  width: 100vw;
   background: #262025;
 `;
 export const HomeMain = styled.main`
@@ -16,6 +18,12 @@ flex-direction: column;
 flex-grow: 1; 
 padding: 2rem 0 0 0;
 `;
+export const SelectedButtonsAndAddItemsButtonContainer = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-right: 4rem;
+`
 
 export const ButtonsOptionContainer = styled.div`
     display: flex;
@@ -34,7 +42,6 @@ border-radius: 3px;
 `
 export const HomeContent = styled.section`
     margin-top: 1rem;
-    width: 100%;
     height: 100%;
     background: #3F3A3E;
     padding-left: 1rem;

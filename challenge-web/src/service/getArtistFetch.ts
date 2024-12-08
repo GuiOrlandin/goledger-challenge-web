@@ -1,28 +1,24 @@
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 
-export interface AlbumResponse {
-    "@assetType": "album";
+export interface ArtistResponse {
+    "@assetType": string;
     "@key": string;
     "@lastTouchBy": string;
     "@lastTx": string;
     "@lastUpdated": string;
-    artist: {
-        "@assetType": "artist";
-        "@key": string;
-    };
+    country: string;
     name: string;
-    year: number;
     type: string | undefined,
 }
 
-async function fetchAlbumData() {
+async function fetchArtistData() {
     const response = await axios.post(
         `http://ec2-54-91-215-149.compute-1.amazonaws.com/api/query/search`,
         {
             query: {
                 selector: {
-                    "@assetType": "album",
+                    "@assetType": "artist",
                 },
             },
         },
@@ -36,9 +32,9 @@ async function fetchAlbumData() {
     return response.data.result;
 }
 
-export function albumFetch() {
-    return useQuery<AlbumResponse[]>({
-        queryKey: ["albums-info"],
-        queryFn: () => fetchAlbumData(),
+export function artistFetch() {
+    return useQuery<ArtistResponse[]>({
+        queryKey: ["artists-info"],
+        queryFn: () => fetchArtistData(),
     });
 }

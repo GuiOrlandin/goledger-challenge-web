@@ -1,6 +1,5 @@
 import { ListOfPlaylistContainer, ListOfRecentSongsContainer, PlaylistContainer, RecentSongsContainer, RecentSongsNameAndAlbumContainer, SearchInputContainer, SideBarContainer, SideBarTitle, SideBarTitleAndCreatePlaylist, SongAndTimeContainer } from "./styles";
 
-import { FaPlus } from "react-icons/fa";
 import { IoMdPlay } from "react-icons/io";
 
 
@@ -30,7 +29,6 @@ export default function SideBar() {
         <SideBarContainer>
             <SideBarTitleAndCreatePlaylist>
                 <SideBarTitle>Suas Playlists</SideBarTitle>
-                <FaPlus />
             </SideBarTitleAndCreatePlaylist>
             <SearchInputContainer>
                 <input type="search" name="" id="" placeholder="Pesquise sua playlist" />

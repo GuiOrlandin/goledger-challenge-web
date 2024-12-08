@@ -1,36 +1,18 @@
-import { CardContainer, InfoRow, Label, Title, Value } from "./styles";
+import { CardContainer, InfoRow, Label, NameAndSvgIconContainer, Title, Value } from "./styles";
 
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-
-interface PlaylistData {
-    name: string;
-    author: string;
-    lastUpdated: string;
-};
-
-interface MusicData {
-    name: string;
-    author: string;
-    album: string;
-};
-
-interface AlbumData {
-    "@lastUpdated": string;
-    artist: {
-        "@assetType": "artist";
-        "@key": string;
-    };
-    name: string;
-    year: number;
-};
+import { AlbumResponse } from "../../service/getAlbumFetch";
+import { ArtistResponse } from "../../service/getArtistFetch";
+import { SongResponse } from "../../service/getSongFetch";
+import { FaCompactDisc, FaListUl, FaMusic, FaUser } from "react-icons/fa";
+import { PlaylistResponse } from "../../service/getPlaylistFetch";
 
 interface CardModelProps {
-    type: string,
-    data: PlaylistData | MusicData | AlbumData
+    data: SongResponse | AlbumResponse | ArtistResponse | PlaylistResponse
 }
 
-export default function CardModel({ type, data }: CardModelProps) {
+export default function CardModel({ data }: CardModelProps) {
     function formatDate(dateString: string): string {
         const date = new Date(dateString);
         return format(date, "dd 'de' MMMM 'de' yyyy", { locale: ptBR });
@@ -38,26 +20,68 @@ export default function CardModel({ type, data }: CardModelProps) {
 
     return (
         <CardContainer>
-            <Title>{data.name}</Title>
-            {type === "playlist" && "lastUpdated" in data && (
-                <InfoRow>
-                    <Label>Última atualização:</Label>
-                    <Value>{formatDate(data.lastUpdated)}</Value>
-                </InfoRow>
+            {data["@assetType"] === "playlist" && (
+                <>
+                    <NameAndSvgIconContainer>
+                        <Title>{data.name}</Title>
+                        <FaListUl />
+                    </NameAndSvgIconContainer>
+                    <InfoRow>
+                        <Label>Última atualização:</Label>
+                        <Value>{formatDate(data["@lastUpdated"])}</Value>
+                    </InfoRow>
+                </>
             )}
-            {type === "artist" && "album" in data && (
-                <InfoRow>
-                    <Label>Álbum:</Label>
-                    <Value>{data.album}</Value>
-                </InfoRow>
-            )}
-            {type === "album" && "year" in data && (
-                <InfoRow>
-                    <Label>Ano:</Label>
-                    <Value>{data.year}</Value>
-                </InfoRow>
-            )}
-        </CardContainer>
+            {data["@assetType"] === "artist" && (
+                <>
+                    {data.name !== "" &&
+                        <NameAndSvgIconContainer>
+                            <Title>{data.name}</Title>
+                            <FaUser />
+                        </NameAndSvgIconContainer>
+                    }
+                    {data.country !== "" &&
+                        <InfoRow>
+                            <Label>Nacionalidade:</Label>
+                            <Value>{data.country}</Value>
+                        </InfoRow>
+                    }
+                </>
+            )
+            }
+            {
+                data["@assetType"] === "album" && "year" in data && (
+                    <>
+                        {data.name !== "" &&
+                            <NameAndSvgIconContainer>
+                                <Title>{data.name}</Title>
+                                <FaCompactDisc />
+                            </NameAndSvgIconContainer>
+                        }
+                        <InfoRow>
+                            <Label>Ano:</Label>
+                            <Value>{data.year}</Value>
+                        </InfoRow>
+                    </>
+                )
+            }
+            {
+                data["@assetType"] === "song" && "name" in data && (
+                    <>
+                        {data.name !== "" &&
+                            <NameAndSvgIconContainer>
+                                <Title>{data.name}</Title>
+                                <FaMusic />
+                            </NameAndSvgIconContainer>
+                        }
+                        <InfoRow>
+                            <Label>Ano:</Label>
+                            <Value>{formatDate(data["@lastUpdated"])}</Value>
+                        </InfoRow>
+                    </>
+                )
+            }
+        </CardContainer >
     );
 };
 
