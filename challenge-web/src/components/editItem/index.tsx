@@ -18,7 +18,6 @@ import { useForm, FieldValues } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CiEdit } from "react-icons/ci";
-import { SongResponse } from "../../service/getSongFetch";
 import { AlbumResponse } from "../../service/getAlbumFetch";
 import { ArtistResponse } from "../../service/getArtistFetch";
 import { PlaylistResponse } from "../../service/getPlaylistFetch";

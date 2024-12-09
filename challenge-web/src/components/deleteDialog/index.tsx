@@ -34,8 +34,7 @@ export default function DeleteDialog({
     const [open, setOpen] = useState(false);
     const { mutate: deleteArtist, isSuccess: artistDeleted } = deleteArtistMutate()
 
-    console.log(data)
-
+    console.log(artistDeleted)
 
     function handleDeleteItem() {
         deleteArtist(

@@ -106,7 +106,6 @@ export default function CreateItemDialog() {
         artistCreated, albumCreated, songCreated
     ])
 
-
     return (
         <Dialog.Root open={open}>
             <Dialog.Trigger asChild>

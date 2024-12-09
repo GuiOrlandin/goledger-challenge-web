@@ -9,10 +9,8 @@ import { playlistFetch, PlaylistResponse } from "../../service/getPlaylistFetch"
 import CreateItemDialog from "../../components/createItem";
 
 
-
-
 export default function Home() {
-    const { data, isLoading } = albumFetch()
+    const { data } = albumFetch()
     const { data: artistData } = artistFetch()
     const { data: songsData } = songFetch()
     const { data: playlistData } = playlistFetch()
@@ -20,8 +18,8 @@ export default function Home() {
     const [allResponsesData, setAllResponsesData] = useState<(SongResponse | AlbumResponse | ArtistResponse | PlaylistResponse)[]>([])
     const [currentPage, setCurrentPage] = useState(1);
 
-
-
+    console.log(playlistData)
+    console.log(songsData)
 
 
     function getPaginatedItems(data: any[], page: number, limit: number) {
@@ -36,11 +34,7 @@ export default function Home() {
             : allResponsesData.filter((item) => item.type === type);
     }
 
-
     const limit = 15
-
-
-
 
     const filteredItems = useMemo(
         () => filterItemsByType(seletecButton),
@@ -54,7 +48,6 @@ export default function Home() {
 
     const totalPages = Math.ceil(filteredItems.length / limit);
     const pages = Array.from({ length: totalPages }, (_, index) => index + 1);
-
 
     useEffect(() => {
         if (data && artistData && songsData && playlistData) {
@@ -72,8 +65,6 @@ export default function Home() {
             setAllResponsesData(sortedData);
         }
     }, [data, artistData, songsData, playlistData]);
-
-
 
 
     return (
