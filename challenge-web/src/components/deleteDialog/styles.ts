@@ -44,6 +44,9 @@ export const CancelButton = styled(Dialog.Close)`
   border: none;
   padding: 0.5rem;
   border-radius: 8px;
+  min-width: 48%;
+  align-items: center;
+  justify-content: center;
   color: white;
   font-weight: 500;
   background: #1D171C;
@@ -77,6 +80,9 @@ export const ConfirmButton = styled.button`
   display: flex;
   border: none;
   padding: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  min-width: 48%;
   border-radius: 8px;
   color: white;
   font-weight: 500;

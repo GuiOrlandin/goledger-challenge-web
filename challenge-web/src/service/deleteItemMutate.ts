@@ -7,7 +7,6 @@ interface DeleteItemProps {
 }
 
 async function deleteData(deleteItemData: DeleteItemProps) {
-    console.log(deleteItemData)
 
     try {
         const token = btoa(`psAdmin:goledger`);

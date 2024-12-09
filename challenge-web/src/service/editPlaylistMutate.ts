@@ -1,12 +1,13 @@
 import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { playlistSongInterface } from "../routes/playlist";
 
-export interface EditAlbumDetails {
+export interface EditPlaylistDetails {
     key: string;
-    year: string;
+    arrayOfsongs: playlistSongInterface[];
 }
 
-async function putData(albumData: EditAlbumDetails) {
+async function putData(playlistData: EditPlaylistDetails) {
 
     try {
         const token = btoa(`psAdmin:goledger`);
@@ -20,9 +21,9 @@ async function putData(albumData: EditAlbumDetails) {
 
         const requestBody = {
             update: {
-                "@assetType": "album",
-                "@key": albumData.key,
-                year: albumData.year
+                "@assetType": "playlist",
+                "@key": playlistData.key,
+                songs: playlistData.arrayOfsongs
             }
         };
 
@@ -34,18 +35,18 @@ async function putData(albumData: EditAlbumDetails) {
 
         return response.data;
     } catch (error) {
-        throw new Error("Falha ao editar o álbum");
+        throw new Error("Falha ao editar a playlist");
     }
 }
 
-export function editAlbumMutate() {
+export function editPlaylistMutate() {
     const queryClient = useQueryClient();
 
     const mutate = useMutation({
-        mutationFn: ({ albumData }: { albumData: EditAlbumDetails }) =>
-            putData(albumData),
+        mutationFn: ({ playlistData }: { playlistData: EditPlaylistDetails }) =>
+            putData(playlistData),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["albuns-info"] });
+            queryClient.invalidateQueries({ queryKey: ["playlist-info"] });
         },
     });
 

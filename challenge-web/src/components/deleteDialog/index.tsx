@@ -25,11 +25,13 @@ import { SongResponse } from "../../service/getSongFetch";
 interface DeleteDialogProps {
     title: string;
     data: AlbumResponse | ArtistResponse | PlaylistResponse | SongResponse
+    deleted?: (value: boolean) => void;
 }
 
 export default function DeleteDialog({
     title,
-    data
+    data,
+    deleted
 }: DeleteDialogProps) {
     const [open, setOpen] = useState(false);
     const { mutate: deleteArtist, isSuccess: artistDeleted } = deleteArtistMutate()
@@ -48,7 +50,12 @@ export default function DeleteDialog({
     }
 
     useEffect(() => {
+
         if (artistDeleted) {
+            if (deleted) {
+                deleted(artistDeleted)
+            }
+
             setOpen(false)
         }
     }, [artistDeleted])
