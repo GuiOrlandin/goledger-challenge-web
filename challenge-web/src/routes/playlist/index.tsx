@@ -4,7 +4,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import SideBar from "../../components/sideBar";
 import { songFetch } from "../../service/getSongFetch";
 import { playlistAsset } from "../../service/readAsset";
-import { ActionsButtonsContainer, AddMusicaCard, Card, CardContainer, CreatePlaylistButton, CreatePlaylistContainer, DeleteItemButton, EditItemButton, ErrorMessage, HomeRedirectAndActionsButtonsContainer, HomeRedirectContainer, LabelAndInputContainter, NameAndContent, NameInput, PlaylistContainer, PlaylistContent, PlaylistTitle, SaveChangesInPlaylistButton, SearchAndCardContainer, SearchInput, SvgAddSongContainer, Table, TableContainer } from "./styles";
+import { ActionsButtonsContainer, AddMusicaCard, CardContainer, CreatePlaylistButton, CreatePlaylistContainer, DeleteItemButton, EditItemButton, ErrorMessage, HomeRedirectAndActionsButtonsContainer, HomeRedirectContainer, LabelAndInputContainter, NameAndContent, NameInput, PlaylistContainer, PlaylistContent, PlaylistTitle, SaveChangesInPlaylistButton, SearchAndCardContainer, SearchInput, SvgAddSongContainer, Table, TableContainer } from "./styles";
 import { albumFetch } from "../../service/getAlbumFetch";
 import { FaHome, FaMusic } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";

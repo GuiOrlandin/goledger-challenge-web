@@ -18,8 +18,6 @@ export default function Home() {
     const [allResponsesData, setAllResponsesData] = useState<(SongResponse | AlbumResponse | ArtistResponse | PlaylistResponse)[]>([])
     const [currentPage, setCurrentPage] = useState(1);
 
-    console.log(playlistData)
-    console.log(songsData)
 
 
     function getPaginatedItems(data: any[], page: number, limit: number) {

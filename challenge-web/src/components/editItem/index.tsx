@@ -79,7 +79,6 @@ export default function EditItemDialog({ type, InitalData }: EditItemDialogProps
     });
 
     function handleEditItem(data: FieldValues) {
-        console.log(data)
 
         if (type === "artist") {
             editArtis({
